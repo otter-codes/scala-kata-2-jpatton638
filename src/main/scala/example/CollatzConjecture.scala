@@ -39,7 +39,10 @@ object CollatzConjecture extends scala.App {
   lazy val number = StdIn.readLine("Enter a number: ").toInt
 
   try {
-    calculate(number)
+
+    if (number != 0) calculate(number)
+    else println("Idiot")
+
   } catch {
     case e: NumberFormatException => println("Not a number")
   }
