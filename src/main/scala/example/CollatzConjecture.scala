@@ -5,45 +5,36 @@ import scala.io.StdIn
 
 object CollatzConjecture extends scala.App {
 
-  def calculate(number: Int): Int = {
-
+  try {
+    lazy val number = StdIn.readLine("Enter a number: ").toInt
     val runningTotal = ListBuffer[Int](number)
-    count(number)
-
-    def count(input: Int): Unit = {
-
-      if (input != 1) {
-
-        input % 2 == 0 match {
-
-          case true =>
-            val newNum = input / 2
-            runningTotal.append(newNum)
-            count(newNum)
-
-          case false =>
-            val newNum = (input * 3) + 1
-            runningTotal.append(newNum)
-            count(newNum)
-        }
-      } else {
-        val list = runningTotal.toList
-        println(s"$number needs a Collatz Conjecture of ${list.length}")
-        println(list)
-      }
-    }
-
-    number
+    count(number, runningTotal)
+  } catch {
+    case ex: NumberFormatException => println("Not a number")
   }
 
-  lazy val number = StdIn.readLine("Enter a number: ").toInt
+  def count(input: Int, buffer: ListBuffer[Int]): Int = {
 
-  try {
+    (input compare 1).signum match {
 
-    if (number != 0) calculate(number)
-    else println("Idiot")
-
-  } catch {
-    case e: NumberFormatException => println("Not a number")
+    case 1 =>
+      if (input % 2 == 0) {
+        val newNum = input / 2
+        buffer.append(newNum)
+        count(newNum, buffer)
+      } else {
+        val newNum = (input * 3) + 1
+        buffer.append(newNum)
+        count(newNum, buffer)
+      }
+    case 0 =>
+      val list = buffer.toList
+      println(s"${list.head} needs ${list.length} operations")
+      println(list)
+      list.length
+    case -1 =>
+      println("Value less than 1")
+      0
+    }
   }
 }
